@@ -1,16 +1,44 @@
 import React, { Component } from "react";
+import {
+  Button,
+  FormControl,
+  ControlLabel,
+  FormGroup,
+  HelpBlock,
+} from "react-bootstrap";
 import "./App.css";
 
-const App = () => (
-  <div className="App">
-    <header className="App-header">
-      <img className="App-logo" alt="logo" />
-      <h1 className="App-title">Welcome to React</h1>
-    </header>
-    <p className="App-intro">
-      To get started, edit <code>src/App.js</code> and save to reload.
-    </p>
-  </div>
+const FieldGroup = ({ id, label, help, ...props }) => (
+  <FormGroup controlId={id}>
+    <ControlLabel>{label}</ControlLabel>
+    <FormControl {...props} />
+    {help && <HelpBlock>{help}</HelpBlock>}
+  </FormGroup>
 );
+
+class App extends React.Component {
+  handleSubmit = () => {
+    alert(this.questionNameRef.value);
+  }
+
+  render = () => (
+    <div style={{ width: 500, marginLeft: 20 }}>
+      <form>
+        <FieldGroup
+          type="text"
+          label="Question Name"
+          placeholder="Enter text"
+          inputRef={ref => this.questionNameRef = ref}
+        />
+        <Button
+          bsStyle="primary"
+          onClick={this.handleSubmit}
+        >
+          Submit
+        </Button>
+      </form>
+    </div>
+  );
+}
 
 export default App;
