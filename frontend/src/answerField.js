@@ -19,6 +19,11 @@ const FieldGroup = ({ id, label, help, ...props }) => (
 
 export class AnswerField extends React.Component
 {
+  constructor(props)
+  {
+    super(props);
+  }
+
   render()
   {
     return(
