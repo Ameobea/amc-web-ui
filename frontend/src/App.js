@@ -7,7 +7,7 @@ import {
   HelpBlock,
 } from "react-bootstrap";
 import "./App.css";
-import {Form} from "./form.js";
+import Form from "./form.js";
 
 
 class App extends React.Component {
