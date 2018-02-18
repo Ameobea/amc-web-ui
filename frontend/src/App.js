@@ -6,8 +6,9 @@ import {
   FormGroup,
   HelpBlock,
 } from "react-bootstrap";
+
 import "./App.css";
-import Form from "./form.js";
+import QuestionForm from "./components/QuestionForm";
 
 
 class App extends React.Component {
@@ -18,7 +19,7 @@ class App extends React.Component {
   render = () => (
     <div>
       <h1 style={{fontSize: 28, fontFamily:'times'}}>Enter your question, answers, and check correct answers.</h1>
-      <Form />
+      <QuestionForm />
     </div>
   );
 }
