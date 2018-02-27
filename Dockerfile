@@ -8,6 +8,8 @@ RUN mkdir -p /usr/local/nvm
 
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION 8.5.0
+ENV REACT_APP_API_ROOT='mail2.ameo.link'
+ENV REACT_APP_API_PORT=4545
 
 WORKDIR /app/frontend
 

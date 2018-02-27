@@ -1,3 +1,5 @@
+/* global process */
+
 import React from "react";
 import { Button } from "react-bootstrap";
 import { compose, withState } from 'recompose';
@@ -7,7 +9,10 @@ import { AnswerField } from "./AnswerField";
 import { QuestionField } from "./Question";
 import "./AnswerField.css";
 
-const API_ROOT_URL = 'http://localhost:4545';
+const API_ROOT = process.env.REACT_APP_API_ROOT || 'localhost';
+const API_PORT = process.env.REACT_APP_API_PORT || 4545;
+
+const API_ROOT_URL = `http://${API_ROOT}:${API_PORT}`;
 
 const Answers = ({ answers, setAnswers }) => (
   <div>
