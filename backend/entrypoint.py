@@ -1,12 +1,12 @@
 import json
 
 from flask import Flask, request
+from flask_cors import CORS
 
-app = Flask(__name__)
+from ToTEX import parse_dict
 
-@app.route("/")
-def hello():
-    return "Hello World!"
+app = Flask(__name__, static_url_path='')
+CORS(app)
 
 @app.route("/example_json_post", methods=["POST"])
 def process_question():
@@ -17,4 +17,10 @@ def process_question():
 
     return json.dumps(body)
 
-app.run(port=4545)
+@app.route("/generate_tex", methods=["POST"])
+def generate_tex():
+    j = request.json
+
+    return parse_dict(j)
+
+app.run(host='0.0.0.0', port=4545)

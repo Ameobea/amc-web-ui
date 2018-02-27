@@ -7,6 +7,8 @@ import { AnswerField } from "./AnswerField";
 import { QuestionField } from "./Question";
 import "./AnswerField.css";
 
+const API_ROOT_URL = 'http://localhost:4545';
+
 const Answers = ({ answers, setAnswers }) => (
   <div>
     {answers.map(({ answerText, correct }, index) => (
@@ -31,7 +33,15 @@ const Answers = ({ answers, setAnswers }) => (
 );
 
 const handleSubmit = state => {
-  alert(JSON.stringify(state, null, 2));
+  fetch(`${API_ROOT_URL}/generate_tex`, {
+    method: 'POST',
+    body: JSON.stringify(state),
+    headers: {
+      'Content-Type': 'application/json'
+    }}
+  )
+    .then(res => res.text())
+    .then(res => alert(res));
 };
 
 const Form = ({ state, setState }) => (

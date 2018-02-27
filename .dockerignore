@@ -1,0 +1,4 @@
+Dockerfile
+frontend/build
+frontend/node_modules
+backend/__pycache__
