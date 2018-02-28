@@ -15,7 +15,7 @@ const API_PORT = process.env.REACT_APP_API_PORT || 4545;
 const API_ROOT_URL = `http://${API_ROOT}:${API_PORT}`;
 
 const Answers = ({ answers, setAnswers }) => (
-  <div>
+  <div style={{ marginBottom: 20 }}>
     {answers.map(({ answerText, correct }, index) => (
       <AnswerField
         onChange={e => {
@@ -34,6 +34,15 @@ const Answers = ({ answers, setAnswers }) => (
         }}
       />
     ))}
+
+    <Button
+      bsStyle='info'
+      onClick={() => setAnswers(
+        [...answers, {answerText: '', correct: false}]
+      )}
+    >
+      Add Answer
+    </Button>
   </div>
 );
 
