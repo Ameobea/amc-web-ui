@@ -1,3 +1,0 @@
-# Quizzing Application Project
-
-TODO
