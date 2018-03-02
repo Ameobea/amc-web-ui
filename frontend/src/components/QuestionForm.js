@@ -8,6 +8,7 @@ import * as R from 'ramda';
 import { AnswerField } from "./AnswerField";
 import { QuestionField } from "./Question";
 import "./AnswerField.css";
+import "./QuestionForm.css";
 
 const API_ROOT = process.env.REACT_APP_API_ROOT || 'localhost';
 const API_PORT = process.env.REACT_APP_API_PORT || 4545;
@@ -15,7 +16,7 @@ const API_PORT = process.env.REACT_APP_API_PORT || 4545;
 const API_ROOT_URL = `http://${API_ROOT}:${API_PORT}`;
 
 const Answers = ({ answers, setAnswers }) => (
-  <div style={{ marginBottom: 20 }}>
+  <div class = "answers" style={{ marginBottom: 20 }}>
     {answers.map(({ answerText, correct }, index) => (
       <AnswerField
         onChange={e => {
@@ -36,6 +37,7 @@ const Answers = ({ answers, setAnswers }) => (
     ))}
 
     <Button
+      id = "addAnswerButton"
       bsStyle='info'
       onClick={() => setAnswers(
         [...answers, {answerText: '', correct: false}]
@@ -59,7 +61,7 @@ const handleSubmit = state => {
 };
 
 const Form = ({ state, setState }) => (
-  <div style={{ width: 520, marginLeft: 20 }}>
+  <div class= "form" style={{ width: 520, marginLeft: 20 }}>
     <form>
       <QuestionField
         label="Question: "
@@ -76,6 +78,7 @@ const Form = ({ state, setState }) => (
       </div>
 
       <Button
+        id = "submitButton"
         bsStyle="primary"
         onClick={() => handleSubmit(state)}
       >
