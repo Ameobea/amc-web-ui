@@ -1,0 +1,17 @@
+.answers #addAnswerButton {
+  background-color: #0034d1;
+  border: 1px solid black;
+  color: black;
+  font-family: "Trebuchet MS";
+  font-weight: 700;
+  padding: 5px 15px 5px 15px;
+}
+
+.form #submitButton {
+  background-color: #0034d1;
+  border: 1px solid black;
+  color: black;
+  font-family: "Trebuchet MS";
+  font-weight: 700;
+  padding: 5px 15px 5px 15px;
+}
