@@ -1,16 +1,8 @@
-import React, { Component } from "react";
-import {
-  Button,
-  FormControl,
-  ControlLabel,
-  FormGroup,
-  HelpBlock,
-} from "react-bootstrap";
+import React from "react";
 
 import "./App.css";
 import QuestionForm from "./components/QuestionForm";
 import banner from "./components/banner.png";
-
 
 class App extends React.Component {
   handleSubmit = () => {
@@ -20,16 +12,16 @@ class App extends React.Component {
   render = () => (
 
     <div>
-      <div class="banner">
+      <div className="banner">
         <img src={banner} />
       </div>
-      <div class="body">
-        <ul class="navBar">
+      <div className="body">
+        <ul className="navBar">
           <li>Home</li>
           <li>Other Items</li>
         </ul>
-        <div class="questions">
-          <h1 class="headtext">Enter your question, answers, and check correct answers.</h1>
+        <div className="questions">
+          <h1 className="headtext">Enter your question, answers, and check correct answers.</h1>
           <QuestionForm />
         </div>
       </div>
