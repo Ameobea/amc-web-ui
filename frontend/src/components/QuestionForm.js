@@ -49,8 +49,15 @@ const Answers = ({ answers, setAnswers }) => (
   </div>
 );
 
+//Tests if given input has text
+const answerHasText = (answer) => {
+  return answer.answerText !== '';
+}
+
 const handleSubmit = state => {
-  if (state.questionValid){
+  //An array of boolean values stating whether or not each answer has text
+  const answersValid = state.answers.map(answerHasText);
+  if (state.questionValid && !answersValid.includes(false)){
   fetch(`${API_ROOT_URL}/create_project`, {
     method: 'POST',
     body: JSON.stringify(state),
@@ -63,7 +70,7 @@ const handleSubmit = state => {
   }
   else
   {
-    alert("Question is a required field");
+    alert("All fields are required");
   }
 };
 
@@ -76,7 +83,7 @@ const Form = ({ state, setState }) => (
         id = 'question'
         value={state.questionText}
         //Changes question state and questionValid state
-        onChange={e => setState({ ...state, questionText: e.target.value, questionValid:true })}
+        onChange={e => setState({ ...state, questionText: e.target.value, questionValid: true})}
       />
 
       <div style={{ width: 500, marginLeft: 20, paddingTop: 25 }}>
