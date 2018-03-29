@@ -1,4 +1,5 @@
-import json
+""" Contains utilities for converting the intermediate JSON representation into
+TeX content. """
 
 def parse_dict(q: dict) -> str:
     output = ""

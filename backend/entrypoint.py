@@ -1,13 +1,14 @@
+""" Defines an API that can be used to interact with Auto Multiple Choice.  Exposes this
+API via a HTTP interface using the Flask webserver. """
+
 import json
-import pythonWrapper
 from os import path
 
 from flask import Flask, request
 from flask_cors import CORS
 
-
-
 from ToTEX import parse_dict
+import pythonWrapper
 
 app = Flask(__name__, static_url_path='')
 CORS(app)
@@ -29,13 +30,14 @@ def generate_tex():
 def generate_pdf():
     j = request.json
 
-    with open('text.tex', mode='w') as quiz_file:
+    project_name = 'pythonTest4'
+    project_dir = pythonWrapper.createProject(project_name)
+    tex_file_path = path.join(project_dir, 'text.tex')
+
+    with open(tex_file_path, mode='w') as quiz_file:
         quiz_file.write(parse_dict(j))
         quiz_file.close()
 
-    project_name = 'pythonTest4'
-    project_dir = pythonWrapper.createProject(project_name)
-    pythonWrapper.addQuestion('text.tex', project_dir, project_name)
     pythonWrapper.prepareQuestion(project_dir, 'text.tex', 'TheNameOfThePDF')
 
     return project_dir
