@@ -15,7 +15,8 @@ CORS(app)
 
 @app.route("/", methods=["GET"])
 def serve_index():
-    return render_template(url_for('static', filename='index.html'))
+    # return render_template(url_for('static', filename='index.html'))
+    return app.send_static_file('index.html')
 
 @app.route("/example_json_post", methods=["POST"])
 def process_question():
