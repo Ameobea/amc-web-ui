@@ -4,7 +4,7 @@ API via a HTTP interface using the Flask webserver. """
 import json
 from os import path
 
-from flask import Flask, request
+from flask import Flask, request, send_file
 from flask_cors import CORS
 
 from ToTEX import parse_dict
@@ -38,7 +38,9 @@ def generate_pdf():
         quiz_file.write(parse_dict(j))
         quiz_file.close()
 
-    pythonWrapper.prepareQuestion(project_dir, 'text.tex', 'TheNameOfThePDF')
+    pythonWrapper.prepareQuestion(project_dir, tex_file_path, 'TheNameOfThePDF')
+
+    return send_file(path.join(project_dir, 'DOC-subject.pdf'), attachment_filename='generated_quiz.pdf')
 
     return project_dir
 

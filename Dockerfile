@@ -1,6 +1,6 @@
 FROM python:3.5.5-jessie
 
-RUN apt-get update && apt-get install build-essential libssl-dev auto-multiple-choice -y
+RUN apt-get update && apt-get install build-essential libssl-dev auto-multiple-choice texlive-fonts-recommended -y
 
 RUN mkdir -p /usr/local/nvm
 

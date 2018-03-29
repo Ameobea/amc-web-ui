@@ -1,6 +1,7 @@
 """ Wrapper functions that interact with the `auto-multiple-choice` CLI """
 
 from functools import partial
+from subprocess import run
 import tempfile
 import os
 from os import path
@@ -22,8 +23,10 @@ def createProject(project_name: str):
     create_dir = partial(make_project_dir, temp_dir)
     create_dir([project_name])
 
-    def create_inner_dir(dirs): return make_project_dir(
-        temp_dir, [project_name, *dirs])
+    def create_inner_dir(dirs):
+        merged = [project_name] + dirs
+        return make_project_dir(temp_dir, merged)
+
     create_inner_dir(['cr'])
     create_inner_dir(['cr', 'corrections'])
     create_inner_dir(['cr', 'corrections', 'jpg'])
@@ -39,8 +42,6 @@ def createProject(project_name: str):
 
 
 def prepareQuestion(projectDir, tex_file_path, pdfName):
-    # os.system('sh prepareQuestion.sh ' + projectDir + ' ' + tex_file_path + ' ' + pdfName)
-
     # Run the AMC command line to create the subject, correction, and position files
     run(['auto-multiple-choice', 'prepare', '--mode', 's', '--prefix', projectDir,
          tex_file_path, '--out-sujet', 'DOC-subject.pdf', '--out-corrige', 'DOC-correction.pdf',
@@ -50,6 +51,9 @@ def prepareQuestion(projectDir, tex_file_path, pdfName):
     run(['auto-multiple-choice', 'prepare', '--mode', 'b',
          '--prefix', projectDir, tex_file_path, '--data', './data/'])
 
+    # Add data from each working document to the layout database
+    run(['auto-multiple-choice', 'meptex', '--src', path.join(projectDir, '$1', 'DOC-calage.xy'),
+        '--data', path.join(projectDir, '$1', 'data')])
 
 if __name__ == "__main__":
     project_name = 'pythonTest4'
