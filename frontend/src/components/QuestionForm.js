@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import { compose, withState } from 'recompose';
 import * as R from 'ramda';
+import download from 'downloadjs';
 
 import { AnswerField } from "./AnswerField";
 import { QuestionField } from "./Question";
@@ -16,7 +17,7 @@ const API_PORT = process.env.REACT_APP_API_PORT || 4545;
 const API_ROOT_URL = `http://${API_ROOT}:${API_PORT}`;
 
 const Answers = ({ answers, setAnswers }) => (
-  <div class = "answers" style={{ marginBottom: 20 }}>
+  <div className="answers" style={{ marginBottom: 20 }}>
     {answers.map(({ answerText, correct }, index) => (
       <AnswerField
         onChange={e => {
@@ -49,19 +50,19 @@ const Answers = ({ answers, setAnswers }) => (
 );
 
 const handleSubmit = state => {
-  fetch(`${API_ROOT_URL}/generate_tex`, {
+  fetch(`${API_ROOT_URL}/create_project`, {
     method: 'POST',
     body: JSON.stringify(state),
     headers: {
       'Content-Type': 'application/json'
     }}
   )
-    .then(res => res.text())
-    .then(res => alert(res));
+    .then(res => res.blob())
+    .then(blob => download(blob, 'quiz.pdf', 'application/pdf'));
 };
 
 const Form = ({ state, setState }) => (
-  <div class= "form" style={{ width: 520, marginLeft: 20 }}>
+  <div className="form" style={{ width: 520, marginLeft: 20 }}>
     <form>
       <QuestionField
         label="Question: "
