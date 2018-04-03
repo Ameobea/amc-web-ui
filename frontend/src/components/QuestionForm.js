@@ -84,7 +84,7 @@ const Form = ({ state, setState }) => (
         id = 'question'
         value={state.questionText}
         //Changes questionText state
-        onChange={e => setState({ ...state, questionText: e.target.value)}
+        onChange={e => setState({ ...state, questionText: e.target.value})}
       />
 
       <div style={{ width: 500, marginLeft: 20, paddingTop: 25 }}>
