@@ -42,7 +42,15 @@ const Answers = ({ answers, setAnswers }) => (
   </div>
 );
 
+//Tests if given input has text
+const answerHasText = (answer) => {
+  return answer.answerText !== '';
+}
+
 const handleSubmit = state => {
+  //An array of boolean values stating whether or not each answer has text
+  const answersValid = state.answers.map(answerHasText);
+  if (state.questionValid && !answersValid.includes(false)){
   fetch(`./create_project`, {
     method: 'POST',
     body: JSON.stringify(state),
@@ -52,6 +60,11 @@ const handleSubmit = state => {
   )
     .then(res => res.blob())
     .then(blob => download(blob, 'quiz.pdf', 'application/pdf'));
+  }
+  else
+  {
+    alert("All fields are required");
+  }
 };
 
 const Form = ({ state, setState }) => (
@@ -60,8 +73,10 @@ const Form = ({ state, setState }) => (
       <QuestionField
         label="Question: "
         name='question'
+        id = 'question'
         value={state.questionText}
-        onChange={e => setState({ ...state, questionText: e.target.value })}
+        //Changes question state and questionValid state
+        onChange={e => setState({ ...state, questionText: e.target.value, questionValid: true})}
       />
 
       <div style={{ width: 500, marginLeft: 20, paddingTop: 25 }}>
@@ -89,6 +104,8 @@ const initialState = {
     {answerText: '', correct: false},
     {answerText: '', correct: false}
   ],
+  //Does question contain text?
+  questionValid: false
 };
 
 export default compose(
