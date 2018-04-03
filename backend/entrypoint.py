@@ -4,7 +4,7 @@ API via a HTTP interface using the Flask webserver. """
 import json
 from os import path
 
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, url_for, render_template
 from flask_cors import CORS
 
 from ToTEX import parse_dict
@@ -12,6 +12,11 @@ import pythonWrapper
 
 app = Flask(__name__, static_url_path='')
 CORS(app)
+
+@app.route("/", methods=["GET"])
+def serve_index():
+    # return render_template(url_for('static', filename='index.html'))
+    return app.send_static_file('index.html')
 
 @app.route("/example_json_post", methods=["POST"])
 def process_question():
@@ -40,7 +45,8 @@ def generate_pdf():
 
     pythonWrapper.prepareQuestion(project_dir, tex_file_path, 'TheNameOfThePDF')
 
-    return send_file(path.join(project_dir, 'DOC-subject.pdf'), attachment_filename='generated_quiz.pdf')
+    pdf_path = path.join(project_dir, 'DOC-subject.pdf')
+    return send_file(pdf_path, attachment_filename='generated_quiz.pdf')
 
     return project_dir
 

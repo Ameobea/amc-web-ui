@@ -1,5 +1,3 @@
-/* global process */
-
 import React from "react";
 import { Button } from "react-bootstrap";
 import { compose, withState } from 'recompose';
@@ -10,11 +8,6 @@ import { AnswerField } from "./AnswerField";
 import { QuestionField } from "./Question";
 import "./AnswerField.css";
 import "./QuestionForm.css";
-
-const API_ROOT = process.env.REACT_APP_API_ROOT || 'localhost';
-const API_PORT = process.env.REACT_APP_API_PORT || 4545;
-
-const API_ROOT_URL = `http://${API_ROOT}:${API_PORT}`;
 
 const Answers = ({ answers, setAnswers }) => (
   <div className="answers" style={{ marginBottom: 20 }}>
@@ -58,7 +51,7 @@ const handleSubmit = state => {
   //An array of boolean values stating whether or not each answer has text
   const answersValid = state.answers.map(answerHasText);
   if (state.questionValid && !answersValid.includes(false)){
-  fetch(`${API_ROOT_URL}/create_project`, {
+  fetch(`./create_project`, {
     method: 'POST',
     body: JSON.stringify(state),
     headers: {
