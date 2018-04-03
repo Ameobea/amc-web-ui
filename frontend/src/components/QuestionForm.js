@@ -57,7 +57,8 @@ const answerHasText = (answer) => {
 const handleSubmit = state => {
   //An array of boolean values stating whether or not each answer has text
   const answersValid = state.answers.map(answerHasText);
-  if (state.questionValid && !answersValid.includes(false)){
+  //Checks for question test and false in answersValid array
+  if (state.questionText !== '' && !answersValid.includes(false)){
   fetch(`${API_ROOT_URL}/create_project`, {
     method: 'POST',
     body: JSON.stringify(state),
@@ -82,8 +83,8 @@ const Form = ({ state, setState }) => (
         name='question'
         id = 'question'
         value={state.questionText}
-        //Changes question state and questionValid state
-        onChange={e => setState({ ...state, questionText: e.target.value, questionValid: true})}
+        //Changes questionText state
+        onChange={e => setState({ ...state, questionText: e.target.value)}
       />
 
       <div style={{ width: 500, marginLeft: 20, paddingTop: 25 }}>
@@ -110,9 +111,7 @@ const initialState = {
     {answerText: '', correct: false},
     {answerText: '', correct: false},
     {answerText: '', correct: false}
-  ],
-  //Does question contain text?
-  questionValid: false
+  ]
 };
 
 export default compose(
