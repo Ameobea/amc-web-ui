@@ -7,7 +7,7 @@ from os import path
 from flask import Flask, request, send_file, url_for, render_template
 from flask_cors import CORS
 
-from ToTEX import parse_dict
+from ToTEX import parse_dict, parse_dict_list
 import pythonWrapper
 
 app = Flask(__name__, static_url_path='')
@@ -40,7 +40,7 @@ def generate_pdf():
     tex_file_path = path.join(project_dir, 'text.tex')
 
     with open(tex_file_path, mode='w') as quiz_file:
-        quiz_file.write(parse_dict(j))
+        quiz_file.write(parse_dict_list(j))
         quiz_file.close()
 
     pythonWrapper.prepareQuestion(project_dir, tex_file_path, 'TheNameOfThePDF')

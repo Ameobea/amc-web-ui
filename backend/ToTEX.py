@@ -1,6 +1,8 @@
 """ Contains utilities for converting the intermediate JSON representation into
 TeX content. """
 
+from typing import List
+
 header = """
 \\documentclass[a4paper]{article}
 
@@ -51,10 +53,10 @@ trailer = """
 \\end{document}
 """
 
-def parse_dict(q: dict) -> str:
+def parse_dict(q: dict, index: int = 1) -> str:
     output = ""
 
-    output += '\\begin{question}{01-a}\n'
+    output += '\\begin{{question}}{{{}-a}}\n'.format(index)
     output += '\t' + q['questionText'] + '\n'
     output += '\t\\begin{choices}\n'
     for a in q['answers']:
@@ -67,9 +69,9 @@ def parse_dict(q: dict) -> str:
 
     return output
 
-def parse_dict_list(l: list) -> str:
+def parse_dict_list(l: List[dict]) -> str:
     output = ""
-    for q in list:
-        output += parse_dict(q)
+    for (i, question) in enumerate(l):
+        output += parse_dict(question, i)
         output += "\n"
     return header + output + trailer
