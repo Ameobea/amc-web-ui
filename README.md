@@ -14,3 +14,8 @@
 1. Copy a version of the static frontend into the backend `cp -r frontend/build backend/static`
 1. Install dependencies for the backend: `cd backend && pip3 install -r requirements.txt`
 1. Start the backend: `python3 entrypoint.py`
+
+### Building + Running via Docker
+
+1. `docker build -t quizzing .`
+2. `docker run -it -p 4545:4545 quizzing`
