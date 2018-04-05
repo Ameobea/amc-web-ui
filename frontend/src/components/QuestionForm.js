@@ -20,6 +20,13 @@ const getEmptyQuestion = () => ({
   questionValid: false
 });
 
+const InputField = ({ label, children }) => (
+  <div style={{ display: 'flex', flexDirection: 'row' }}>
+    {label}
+    {children}
+  </div>
+);
+
 const Answers = ({ answers, setAnswers }) => (
   <div className="answers" style={{ marginBottom: 20 }}>
     {answers.map(({ answerText, correct }, index) => (
@@ -60,7 +67,7 @@ const answerHasText = (answer) => {
 
 const handleSubmit = state => {
   // An array of boolean values stating whether or not each answer has text
-  const answersValid = state.reduce(
+  const answersValid = state.questions.reduce(
     (acc, { questionValid, answers }) => acc && questionValid && !answers.find(answer => !answerHasText(answer)),
     true
   );
@@ -70,7 +77,7 @@ const handleSubmit = state => {
   }
 
   fetch(
-    './create_project',
+    './store_questions',
     {
       method: 'POST',
       body: JSON.stringify(state),
@@ -79,8 +86,10 @@ const handleSubmit = state => {
       }
     }
   )
-    .then(res => res.blob())
-    .then(blob => download(blob, 'quiz.pdf', 'application/pdf'));
+    .then(res => res.text())
+    .then(res => alert(res));
+    // .then(res => res.blob())
+    // .then(blob => download(blob, 'quiz.pdf', 'application/pdf'));
 };
 
 const Question = ({ state, setState }) => (
@@ -103,44 +112,82 @@ const Question = ({ state, setState }) => (
   </div>
 );
 
+const FormControls = ({ state, setState }) => (
+  <div>
+    <div style={{ paddingBottom: 25 }}>
+      <InputField label='Username (optional)'>
+        <input
+          type='text'
+          value={state.username || ''}
+          onChange={e => setState({ ...state, username: e.target.value })}
+        />
+      </InputField>
+
+      <InputField label='Topic / Tag'>
+        <input
+          type='text'
+          value={state.topic || ''}
+          onChange={e => setState({ ...state, topic: e.target.value })}
+        />
+      </InputField>
+
+      <InputField label='Share question publically?'>
+        <input
+          id="checkBox"
+          type="checkbox"
+          style={{ width: 20, marginRight: 5 }}
+          checked={state.shared}
+          onChange={() => setState({ ...state, shared: !state.shared })}
+        />
+      </InputField>
+    </div>
+
+    <div style={{ flexDirection: "row" }}>
+      <Button
+        id="submitButton"
+        bsStyle="primary"
+        onClick={() => setState({...state, questions: R.append(getEmptyQuestion(), state.questions) })}
+        style={{ marginTop: 0, marginRight: 10 }}
+      >
+        Add Question
+      </Button>
+
+      <Button
+        id="submitButton"
+        bsStyle="primary"
+        onClick={() => handleSubmit(state)}
+      >
+        Submit
+      </Button>
+    </div>
+  </div>
+);
+
 const Form = ({ state, setState }) => (
   <div className="form" style={{ width: 520, marginLeft: 20 }}>
     <form>
       <div>
-        {state.map((questionState, i) => (
+        {state.questions.map((questionState, i) => (
           <Question
             key={i}
             state={questionState}
-            setState={newState => setState(R.update(i, newState, state))}
+            setState={newState => setState({...state, questions: R.update(i, newState, state.questions) })}
           />
         ))}
       </div>
 
       <hr />
 
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <Button
-          id="submitButton"
-          bsStyle="primary"
-          onClick={() => setState([...state, getEmptyQuestion()])}
-          style={{ marginTop: 0, marginRight: 10 }}
-        >
-          Add Question
-        </Button>
-
-        <Button
-          id="submitButton"
-          bsStyle="primary"
-          onClick={() => handleSubmit(state)}
-        >
-          Submit
-        </Button>
-      </div>
+      <FormControls state={state} setState={setState} />
     </form>
   </div>
 );
 
-const initialState = [getEmptyQuestion()];
+const initialState = {
+  username: null,
+  shared: true,
+  questions: [getEmptyQuestion()],
+};
 
 export default compose(
   withState('state', 'setState', initialState),
