@@ -27,6 +27,7 @@ class InvalidUsage(Exception):
     def to_dict(self):
         rv = dict(self.payload or ())
         rv['message'] = self.message
+        rv['success'] = False
         return rv
 
 @app.route("/", methods=["GET"])
@@ -78,6 +79,15 @@ def store_questions():
 
     insert_questions(j['questions'], topic=j['topic'], username=j['username'])
 
-    return jsonify({"status": "success", "message": "Questions successfully stored."})
+    return jsonify({
+        "success": True,
+        "message": "Questions successfully stored."
+    })
+
+@app.errorhandler(InvalidUsage)
+def handle_invalid_usage(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
 
 app.run(host='0.0.0.0', port=4545)

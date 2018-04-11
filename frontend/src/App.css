@@ -55,8 +55,8 @@
 }
 
 .body {
-  display:flex;
-  flex-direction:row;
+  display: flex;
+  flex-direction: row;
 }
 .questions {
   padding-left: 50px;
