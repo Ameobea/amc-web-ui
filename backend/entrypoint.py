@@ -9,7 +9,7 @@ from flask_cors import CORS
 
 from ToTEX import parse_dict, parse_dict_list
 import pythonWrapper
-from db import insert_questions
+from db import insert_questions, query_questions
 
 app = Flask(__name__, static_url_path='')
 CORS(app)
@@ -83,6 +83,12 @@ def store_questions():
         "success": True,
         "message": "Questions successfully stored."
     })
+
+@app.route("/find_questions", methods=["POST"])
+def find_questions():
+    j = request.json
+    db_res = query_questions(j.get('topic'), j.get('username'), j.get('question_text'))
+    return jsonify(db_res)
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):

@@ -2,10 +2,10 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import { compose, withState } from 'recompose';
 import * as R from 'ramda';
-import download from 'downloadjs';
 
 import { AnswerField } from "./AnswerField";
 import { QuestionField } from "./Question";
+import InputField from './InputField';
 import "./AnswerField.css";
 import "./QuestionForm.css";
 
@@ -19,13 +19,6 @@ const getEmptyQuestion = () => ({
   // Does question contain text?
   questionValid: false
 });
-
-const InputField = ({ label, children }) => (
-  <div style={{ display: 'flex', flexDirection: 'row' }}>
-    {label}
-    {children}
-  </div>
-);
 
 const Answers = ({ answers, setAnswers }) => (
   <div className="answers" style={{ marginBottom: 20 }}>
@@ -83,13 +76,11 @@ const handleSubmit = state => {
       body: JSON.stringify(state),
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
     }
   )
     .then(res => res.text())
     .then(res => alert(res));
-    // .then(res => res.blob())
-    // .then(blob => download(blob, 'quiz.pdf', 'application/pdf'));
 };
 
 const Question = ({ state, setState }) => (
