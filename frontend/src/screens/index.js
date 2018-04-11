@@ -15,7 +15,7 @@ const screens = [
 const Screens = () => (
   <Tabs style={{ display: 'flex', flex: 1 }} animation={false} defaultActiveKey={0}>
     {screens.map(({ title, component: Component }, i) => (
-      <Tab key={i} eventKey={i} title={title}>
+      <Tab key={i} eventKey={i} title={title} style={{ diplay: 'flex', flex: 1 }}>
         <Component />
       </Tab>
     ))}

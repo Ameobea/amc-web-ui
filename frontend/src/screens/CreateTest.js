@@ -19,7 +19,7 @@ const handleSubmit = state => {
 };
 
 const CreateTest = () => (
-  <div>
+  <div style={{ diplay: 'flex', flex: 1 }}>
     <h2>Load Existing Questions</h2>
     <LoadQuestions />
   </div>

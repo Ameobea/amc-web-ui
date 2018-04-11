@@ -53,8 +53,8 @@ const LoadedQuestions = ({ dbResponse }) => {
   }
 
   return (
-    <div style={{ paddingTop: 25 }}>
-      <Table striped bordered condensed>
+    <div style={{ display: 'flex', flex: 1, paddingTop: 25 }}>
+      <Table striped bordered condensed responsive>
         <LoadedQuestionsHeader />
 
         <tbody>
@@ -72,7 +72,7 @@ const LoadedQuestions = ({ dbResponse }) => {
 };
 
 const LoadQuestions = ({ state, setState }) => (
-  <div>
+  <div style={{ diplay: 'flex', flex: 1 }}>
     <InputField label='Topic (optional)'>
       <input
         type='text'

@@ -63,19 +63,24 @@
 }
 
 ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    width: 150px;
-    background-color: #6098F2;
-    height: 700px;
-    font-family: "Trebuchet MS";
-    font-size: 22px;
-    color: black;
-    font-weight: 600;
-    border-right: 3px solid black;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 150px;
+  background-color: #6098F2;
+  height: 700px;
+  font-family: "Trebuchet MS";
+  font-size: 22px;
+  color: black;
+  font-weight: 600;
+  border-right: 3px solid black;
 }
 
 li:hover {
   background-color: #0034d1;
+}
+
+.tab-content {
+  display: flex;
+  flex: 1;
 }
