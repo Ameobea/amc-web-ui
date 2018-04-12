@@ -1,11 +1,10 @@
 """ Defines an API that can be used to interact with Auto Multiple Choice.  Exposes this
 API via a HTTP interface using the Flask webserver. """
 
-import json
-from os import path
-
 from flask import Flask, jsonify, request, send_file, url_for, render_template
 from flask_cors import CORS
+import json
+from os import path
 
 from ToTEX import parse_question_dict, parse_question_dict_list
 import pythonWrapper
@@ -94,6 +93,24 @@ def find_questions():
     j = request.json
     db_res = query_questions(j.get('topic'), j.get('username'), j.get('question_text'))
     return jsonify(db_res)
+
+@app.route("/grade_test", methods=["POST"])
+def grade_test():
+    if 'file' not in request.files or request.files['file'].filename == '':
+        print(request.files)
+        raise InvalidUsage('You must provide a file for grading.')
+
+    file = request.files['file']
+    if file.content_type != 'application/pdf':
+        raise InvalidUsage('You must provide a valid PDF file.')
+
+    # Save the file to a temporary directory
+    project_dir = pythonWrapper.createProject('grading')
+    print(project_dir)
+    # Save the uploaded file to it
+    file.save(path.join(project_dir, 'to_grade.pdf'))
+
+    return jsonify({'placeholder': 'value'})
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
