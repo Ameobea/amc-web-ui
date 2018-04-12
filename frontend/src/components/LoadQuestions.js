@@ -92,6 +92,7 @@ const LoadedQuestions = compose(
         </Table>
 
         <button
+          type='button'
           onClick={() => {
             const selectedQuestions = state.reduce((acc, checked, i) => {
               return checked ? [...acc, dbResponse[i]] : acc;

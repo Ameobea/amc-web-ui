@@ -21,6 +21,7 @@ RUN curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | ba
 
 WORKDIR /app/backend
 
+RUN rm -rf /app/backend/static
 RUN cp -r /app/frontend/build /app/backend/static
 
 RUN pip install -r requirements.txt
