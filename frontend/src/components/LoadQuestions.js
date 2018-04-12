@@ -40,6 +40,7 @@ const handleSubmit = (state, setState) => {
 const LoadedQuestionsHeader = () => (
   <thead>
     <tr>
+      <th>X</th>
       <th>Topic</th>
       <th>Username</th>
       <th>Question</th>
@@ -47,33 +48,55 @@ const LoadedQuestionsHeader = () => (
   </thead>
 );
 
-const LoadedQuestions = ({ dbResponse }) => {
-  if(dbResponse === null) {
-    return null;
+const LoadedQuestions = withState('state', 'setState', [])(
+  ({ dbResponse, onQuestionsSelected, state, setState }) => {
+    if(dbResponse === null) {
+      return null;
+    }
+
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        paddingTop: 25,
+      }}>
+        <Table striped bordered condensed responsive>
+          <LoadedQuestionsHeader />
+
+          <tbody>
+            {dbResponse.map(({ topic, username, questionText }, i) => (
+              <tr key={i}>
+                <td>
+                  <input
+                    type='checkbox'
+                    checked={state[i]}
+                    onChange={() => state[i] = true}
+                  />
+                </td>
+                <td>{topic}</td>
+                <td>{username}</td>
+                <td>{questionText}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+
+        <button
+          onClick={() => {
+            const selectedQuestions = state.reduce((acc, checked, i) => {
+              return checked ? [...acc, dbResponse[i]] : acc;
+            }, []);
+            onQuestionsSelected(selectedQuestions);
+          }}
+        >Add to Test</button>
+      </div>
+    );
   }
+);
 
-  return (
-    <div style={{ display: 'flex', flex: 1, paddingTop: 25 }}>
-      <Table striped bordered condensed responsive>
-        <LoadedQuestionsHeader />
-
-        <tbody>
-          {dbResponse.map(({ topic, username, questionText }, i) => (
-            <tr key={i}>
-              <td>{topic}</td>
-              <td>{username}</td>
-              <td>{questionText}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
-  );
-};
-
-const LoadQuestions = ({ state, setState }) => (
-  <div class='loadForm' style={{ diplay: 'flex', flex: 1 }}>
-    <InputField label='Topic (optional): '>
+const LoadQuestions = ({ state, setState, onQuestionsSelected }) => (
+  <div style={{ diplay: 'flex', flex: 1 }}>
+    <InputField label='Topic (optional)'>
       <input class='infoInput' id='topic'
         type='text'
         value={state.topic || ''}
@@ -97,7 +120,7 @@ const LoadQuestions = ({ state, setState }) => (
 
     <button id='loadButton' onClick={() => handleSubmit(state, setState)} >Submit Query</button>
 
-    <LoadedQuestions dbResponse={state.dbResponse} />
+    <LoadedQuestions dbResponse={state.dbResponse} onQuestionsSelected={onQuestionsSelected} />
   </div>
 );
 

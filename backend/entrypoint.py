@@ -65,8 +65,6 @@ def generate_pdf():
     pdf_path = path.join(project_dir, 'DOC-subject.pdf')
     return send_file(pdf_path, attachment_filename='generated_quiz.pdf')
 
-    return project_dir
-
 @app.route("/store_questions", methods=["POST"])
 def store_questions():
     j = request.json
