@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './index.css';
 import { Tabs, Tab } from 'react-bootstrap';
 
 import AddQuestions from './AddQuestions';
@@ -13,7 +13,7 @@ const screens = [
 ];
 
 const Screens = () => (
-  <Tabs style={{ display: 'flex', flex: 1 }} animation={false} defaultActiveKey={0}>
+  <Tabs className='myClass' style={{ display: 'flex', flex: 1 }} animation={false} defaultActiveKey={0}>
     {screens.map(({ title, component: Component }, i) => (
       <Tab key={i} eventKey={i} title={title} style={{ diplay: 'flex', flex: 1 }}>
         <Component />

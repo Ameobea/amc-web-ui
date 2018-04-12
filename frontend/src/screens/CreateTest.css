@@ -1,0 +1,11 @@
+#loadHeader {
+  font-family: "Trebuchet MS";
+  font-size: 22px;
+  font-weight: 900;
+  color: #0034d1;
+  padding: 0px 0px 15px 50px;
+}
+
+#loadingSecton {
+  padding-left: 30px;
+}

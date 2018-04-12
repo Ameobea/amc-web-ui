@@ -1,7 +1,7 @@
 import React from "react";
 
 import "./App.css";
-import banner from "./components/banner.png";
+import banner from "./components/banner1.png";
 
 import Screens from './screens';
 

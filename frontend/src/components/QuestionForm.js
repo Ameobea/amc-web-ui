@@ -106,24 +106,24 @@ const Question = ({ state, setState }) => (
 const FormControls = ({ state, setState }) => (
   <div>
     <div style={{ paddingBottom: 25 }}>
-      <InputField label='Username (optional)'>
-        <input
+      <InputField label='Username (optional):'>
+        <input class='infoInput' id='username'
           type='text'
           value={state.username || ''}
           onChange={e => setState({ ...state, username: e.target.value })}
         />
       </InputField>
 
-      <InputField label='Topic / Tag'>
-        <input
+      <InputField label='Topic / Tag:'>
+        <input class='infoInput' id='topic'
           type='text'
           value={state.topic || ''}
           onChange={e => setState({ ...state, topic: e.target.value })}
         />
       </InputField>
 
-      <InputField label='Share question publically?'>
-        <input
+      <InputField label='Share question publically?:'>
+        <input class='infoInput'
           id="checkBox"
           type="checkbox"
           style={{ width: 20, marginRight: 5 }}

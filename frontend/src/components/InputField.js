@@ -1,4 +1,5 @@
 import React from 'react';
+import "./InputField.css";
 
 /**
  * Simple input field that displays an input component alongside a label.  The input component

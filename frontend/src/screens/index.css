@@ -1,0 +1,5 @@
+.myClass ul > li > a {
+    background-color: #88a1d5;
+    color: black;
+    width: 150px;
+}

@@ -1,1 +1,6 @@
 .answerContainer{display:flex; flex-direction:row;}
+
+.infoInput {
+  margin: 0px 0px 10px 10px;
+  border-radius: 5px;
+}

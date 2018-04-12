@@ -1,7 +1,7 @@
 /**
  * Form for loading questions from the database for use in tests.
  */
-
+import "./LoadQuestions.css";
 import React from 'react';
 import { withState } from 'recompose';
 import { Table } from 'react-bootstrap';
@@ -72,30 +72,30 @@ const LoadedQuestions = ({ dbResponse }) => {
 };
 
 const LoadQuestions = ({ state, setState }) => (
-  <div style={{ diplay: 'flex', flex: 1 }}>
-    <InputField label='Topic (optional)'>
-      <input
+  <div class='loadForm' style={{ diplay: 'flex', flex: 1 }}>
+    <InputField label='Topic (optional): '>
+      <input class='infoInput' id='topic'
         type='text'
         value={state.topic || ''}
         onChange={e => setState({ ...state, topic: e.target.value })}
       />
     </InputField>
-    <InputField label='Username (optional)'>
-      <input
+    <InputField label='Username (optional): '>
+      <input class='infoInput' id='username'
         type='text'
         value={state.username || ''}
         onChange={e => setState({ ...state, username: e.target.value })}
       />
     </InputField>
-    <InputField label='Question Contains Text (optional)'>
-      <input
+    <InputField label='Question Contains Text (optional): '>
+      <input class='infoInput' id='contains'
         type='text'
         value={state.questionText || ''}
         onChange={e => setState({ ...state, questionText: e.target.value })}
       />
     </InputField>
 
-    <button onClick={() => handleSubmit(state, setState)} >Submit Query</button>
+    <button id='loadButton' onClick={() => handleSubmit(state, setState)} >Submit Query</button>
 
     <LoadedQuestions dbResponse={state.dbResponse} />
   </div>

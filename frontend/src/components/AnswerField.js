@@ -22,7 +22,7 @@ export const AnswerField = ({
       onChange={() => setIsCorrect(!isCorrect)}
     />
 
-    <input
+    <input class='infoInput'
       type='text'
       value={value}
       onChange={onChange}

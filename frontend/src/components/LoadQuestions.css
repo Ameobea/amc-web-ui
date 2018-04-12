@@ -1,22 +1,31 @@
-.answers #addAnswerButton {
+.loadForm #loadButton {
   background-color: #4c45f1;
   border: 1px solid black;
+  border-radius: 4px;
   color: white;
   font-family: "Trebuchet MS";
   font-weight: 500;
   padding: 5px 15px 5px 15px;
-}
-
-.form #submitButton {
-  background-color: #4c45f1;
-  border: 1px solid black;
-  color: white;
-  font-family: "Trebuchet MS";
-  font-weight: 500;
-  padding: 5px 15px 5px 15px;
+  margin-left: 5px;
 }
 
 .infoInput {
   margin: 0px 0px 10px 10px;
   border-radius: 5px;
+}
+
+.loadForm {
+  padding-left: 50px;
+}
+
+#topic {
+  width: 337px;
+}
+
+#username {
+  width: 305px;
+}
+
+#contains {
+  width: 225px;
 }

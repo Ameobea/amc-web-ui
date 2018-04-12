@@ -1,5 +1,6 @@
 import React from 'react';
 import download from 'downloadjs';
+import "./CreateTest.css";
 
 import LoadQuestions from '../components/LoadQuestions';
 
@@ -19,8 +20,8 @@ const handleSubmit = state => {
 };
 
 const CreateTest = () => (
-  <div style={{ diplay: 'flex', flex: 1 }}>
-    <h2>Load Existing Questions</h2>
+  <div id='loadingSecton' style={{ diplay: 'flex', flex: 1 }}>
+    <h2 id='loadHeader'>Load Existing Questions</h2>
     <LoadQuestions />
   </div>
 );
