@@ -3,8 +3,9 @@
  */
 import "./LoadQuestions.css";
 import React from 'react';
-import { withState } from 'recompose';
+import { compose, lifecycle, withState } from 'recompose';
 import { Table } from 'react-bootstrap';
+import * as R from 'ramda';
 
 import InputField from './InputField';
 
@@ -48,7 +49,16 @@ const LoadedQuestionsHeader = () => (
   </thead>
 );
 
-const LoadedQuestions = withState('state', 'setState', [])(
+const LoadedQuestions = compose(
+  withState('state', 'setState', []),
+  lifecycle({
+    componentWillReceiveProps(nextProps) {
+      if(!R.equals(this.props.dbResponse, nextProps.dbResponse)) {
+        nextProps.setState(R.times(() => false, nextProps.dbResponse.length));
+      }
+    }
+  })
+)(
   ({ dbResponse, onQuestionsSelected, state, setState }) => {
     if(dbResponse === null) {
       return null;
@@ -70,7 +80,7 @@ const LoadedQuestions = withState('state', 'setState', [])(
                   <input
                     type='checkbox'
                     checked={state[i]}
-                    onChange={() => state[i] = true}
+                    onChange={() => setState(R.update(i, !state[i], state))}
                   />
                 </td>
                 <td>{topic}</td>
