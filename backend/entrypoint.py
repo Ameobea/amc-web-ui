@@ -7,9 +7,9 @@ from os import path
 from flask import Flask, jsonify, request, send_file, url_for, render_template
 from flask_cors import CORS
 
-from ToTEX import parse_dict, parse_dict_list
+from ToTEX import parse_question_dict, parse_question_dict_list
 import pythonWrapper
-from db import insert_questions, query_questions
+from db import insert_questions, query_questions, store_test
 
 app = Flask(__name__, static_url_path='')
 CORS(app)
@@ -46,34 +46,41 @@ def process_question():
 def generate_tex():
     j = request.json
 
-    return parse_dict(j)
+    return parse_question_dict(j)
+
+def validate_json(j: dict, key: str):
+    if (not j.get(key)) or (not j.get('username')):
+        raise InvalidUsage("You must supply both a topic and a username!")
+
+    if (not j.get('questions')) or not len(j['questions']):
+        raise InvalidUsage("You must supply questions to store!")
 
 @app.route("/create_project", methods=["POST"])
 def generate_pdf():
     j = request.json
+    validate_json(j, 'name')
 
-    project_name = 'pythonTest4'
-    project_dir = pythonWrapper.createProject(project_name)
+    # Save the test definition to the database for later usage
+    store_test(j['name'], j['username'], j['questions'])
+
+    project_dir = pythonWrapper.createProject(j['name'])
     tex_file_path = path.join(project_dir, 'text.tex')
 
     with open(tex_file_path, mode='w') as quiz_file:
-        quiz_file.write(parse_dict_list(j))
+        quiz_file.write(parse_question_dict_list(j['questions']))
         quiz_file.close()
 
     pythonWrapper.prepareQuestion(project_dir, tex_file_path, 'TheNameOfThePDF')
 
     pdf_path = path.join(project_dir, 'DOC-subject.pdf')
+
+    # TODO: cleanup project directory
     return send_file(pdf_path, attachment_filename='generated_quiz.pdf')
 
 @app.route("/store_questions", methods=["POST"])
 def store_questions():
     j = request.json
-
-    if (not j.get('topic')) or (not j.get('username')):
-        raise InvalidUsage("You must supply both a topic and a username!")
-
-    if (not j.get('questions')) or not len(j['questions']):
-        raise InvalidUsage("You must supply questions to store!")
+    validate_json(j, 'topic')
 
     insert_questions(j['questions'], topic=j['topic'], username=j['username'])
 

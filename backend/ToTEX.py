@@ -1,9 +1,9 @@
-""" Contains utilities for converting the intermediate JSON representation into
-TeX content. """
+''' Contains utilities for converting the intermediate JSON representation into
+TeX content. '''
 
 from typing import List
 
-header = """
+header = '''
 \\documentclass[a4paper]{article}
 
 \\usepackage[utf8x]{inputenc}
@@ -12,6 +12,9 @@ header = """
 \\usepackage[box,completemulti]{automultiplechoice}
 
 \\begin{document}
+
+%%% Set groups to be shuffled
+\\setdefaultgroupmode{withoutreplacement}
 
 \\onecopy{10}{
 
@@ -45,33 +48,36 @@ Duration : 10 minutes.
 \\vspace{1ex}
 
 %%% end of the header
-"""
+'''
 
-trailer = """
+question_body = '''
+\\element{{{}}}{{
+  \\begin{{question}}{{{}-a}}
+    {}
+    \\begin{{choices}}
+{}
+    \\end{{choices}}
+  \\end{{question}}
+}}
+'''
+
+trailer = '''
 }
 
 \\end{document}
-"""
+'''
 
-def parse_dict(q: dict, index: int = 1) -> str:
-    output = ""
+def create_answer(text: str, is_correct: bool):
+    return '      \\{}{{{}}}'.format('correctchoice' if is_correct else 'wrongchoice',
+                                     text)
 
-    output += '\\begin{{question}}{{{}-a}}\n'.format(index)
-    output += '\t' + q['questionText'] + '\n'
-    output += '\t\\begin{choices}\n'
-    for a in q['answers']:
-        if a['correct']:
-            output += '\t\t\\correctchoice{' + a['answerText'] + '}\n'
-        else:
-            output += '\t\t\\wrongchoice{' + a['answerText'] + '}\n'
-    output += '\t\\end{choices}\n'
-    output += '\\end{question}\n'
+def parse_question_dict(q: dict, index: int=1) -> str:
+    answers = '\n'.join(map(lambda a: create_answer(a['answerText'], a['correct']), q['answers']))
+    return question_body.format(q.get('topic') or 'default', index, q['questionText'], answers)
 
-    return output
-
-def parse_dict_list(l: List[dict]) -> str:
+def parse_question_dict_list(l: List[dict]) -> str:
     output = ""
     for (i, question) in enumerate(l):
-        output += parse_dict(question, i)
+        output += parse_question_dict(question, i)
         output += "\n"
     return header + output + trailer

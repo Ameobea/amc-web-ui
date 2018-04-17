@@ -6,6 +6,7 @@ import tempfile
 import os
 from os import path
 import json
+from shutil import rmtree
 from typing import List
 
 
@@ -53,7 +54,12 @@ def prepareQuestion(projectDir, tex_file_path, pdfName):
 
     # Add data from each working document to the layout database
     run(['auto-multiple-choice', 'meptex', '--src', path.join(projectDir, '$1', 'DOC-calage.xy'),
-        '--data', path.join(projectDir, '$1', 'data')])
+         '--data', path.join(projectDir, '$1', 'data')])
+
+def delete_project_directory(projectDir: str):
+    ''' Deletes the temporary directory for the project '''
+
+    rmtree(projectDir)
 
 if __name__ == "__main__":
     project_name = 'pythonTest4'

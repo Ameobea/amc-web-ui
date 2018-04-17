@@ -1,6 +1,5 @@
 """ Interfaces with MongoDB to store and load questions. """
 
-import json
 import os
 from typing import Callable, Optional, List
 
@@ -67,4 +66,28 @@ def query_questions(topic: Optional[str], username: Optional[str],
     }
 
     db_res = list(amc_database['questions'].find(remove_falsey_keys(query), limit=limit))
+    return remove_oids(db_res)
+
+def store_test(test_name: str, username: str, question_list: List[dict]):
+    ''' Stores the questions and metadata used to generate a test in the database, making it
+    possible to regenerate the test later for grading or other purposes. '''
+
+    doc = {
+        'name': test_name,
+        'username': username,
+        'questions': question_list,
+    }
+
+    amc_database['tests'].insert_one(doc)
+
+def retrieve_tests(test_name: str, username: str) -> List[dict]:
+    ''' Retrieves all tests that match the provided criteria, loading them from the database and
+    converting them to JSON format. '''
+
+    query = {
+        'name': test_name,
+        'username': username,
+    }
+
+    db_res = list(amc_database['tests'].find(query))
     return remove_oids(db_res)

@@ -106,23 +106,23 @@ const LoadedQuestions = compose(
 );
 
 const LoadQuestions = ({ state, setState, onQuestionsSelected }) => (
-  <div style={{ diplay: 'flex', flex: 1 }}>
-    <InputField label='Topic (optional)'>
-      <input class='infoInput' id='topic'
+  <div className='loadForm' style={{ diplay: 'flex', flex: 1 }}>
+    <InputField label='Topic (optional): '>
+      <input className='infoInput' id='topic'
         type='text'
         value={state.topic || ''}
         onChange={e => setState({ ...state, topic: e.target.value })}
       />
     </InputField>
     <InputField label='Username (optional): '>
-      <input class='infoInput' id='username'
+      <input className='infoInput' id='username'
         type='text'
         value={state.username || ''}
         onChange={e => setState({ ...state, username: e.target.value })}
       />
     </InputField>
     <InputField label='Question Contains Text (optional): '>
-      <input class='infoInput' id='contains'
+      <input className='infoInput' id='contains'
         type='text'
         value={state.questionText || ''}
         onChange={e => setState({ ...state, questionText: e.target.value })}
