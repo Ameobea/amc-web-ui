@@ -54,7 +54,7 @@ const getInitialTestPreviewState = () => ({
 const TestPreview = withState('state', 'setState', getInitialTestPreviewState())(
   ({ questions, state, setState }) => (
     <div>
-      <h2>Create Test</h2>
+      <h2 id='createHeader'>Create Test</h2>
 
       <Table striped bordered condensed responsive>
         <TestPreviewHeader />
@@ -72,27 +72,34 @@ const TestPreview = withState('state', 'setState', getInitialTestPreviewState())
         </tbody>
       </Table>
 
-      <InputField label='Test Name: '>
-        <input
-          type='text'
-          value={state.name}
-          onChange={e => setState({ ...state, name: e.target.value })}
-        />
-      </InputField>
-      <InputField label='Username: '>
-        <input
-          type='text'
-          value={state.username}
-          onChange={e => setState({ ...state, username: e.target.value })}
-        />
-      </InputField>
+      <div class='createForm'>
+        <InputField label='Test Name: '>
+          <input
+            class='infoInput'
+            id='test'
+            type='text'
+            value={state.name}
+            onChange={e => setState({ ...state, name: e.target.value })}
+          />
+        </InputField>
+        <InputField label='Username: '>
+          <input
+            class='infoInput'
+            id='name'
+            type='text'
+            value={state.username}
+            onChange={e => setState({ ...state, username: e.target.value })}
+          />
+        </InputField>
 
-      <button
-        type='button'
-        onClick={() => handleSubmit({ ...state, questions })}
-      >
-        Generate
-      </button>
+        <button
+          id='generateButton'
+          type='button'
+          onClick={() => handleSubmit({ ...state, questions })}
+        >
+          Generate
+        </button>
+      </div>
     </div>
   )
 );
