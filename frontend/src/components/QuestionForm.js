@@ -58,7 +58,7 @@ const Answers = ({ answers, setAnswers, removeAnswer }) => (
         setAnswers(newAnswers);
       }}
     >
-      Remove Question
+      Remove Answer
     </Button>
   </div>
 );
@@ -151,6 +151,17 @@ const FormControls = ({ state, setState }) => (
         style={{ marginTop: 0, marginRight: 10 }}
       >
         Add Question
+      </Button>
+      <Button
+        id="submitButton"
+        bsStyle="primary"
+        onClick={() => {
+          const newQuestions = R.remove(state.questions.length-1, 1, state.questions);
+          setState({...state, questions: newQuestions});
+        }}
+        style={{ marginTop: 0, marginRight: 10 }}
+      >
+        Remove Question
       </Button>
 
       <Button
