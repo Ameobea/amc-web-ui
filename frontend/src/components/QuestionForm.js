@@ -20,7 +20,7 @@ const getEmptyQuestion = () => ({
   questionValid: false
 });
 
-const Answers = ({ answers, setAnswers }) => (
+const Answers = ({ answers, setAnswers, removeAnswer }) => (
   <div className="answers" style={{ marginBottom: 20 }}>
     {answers.map(({ answerText, correct }, index) => (
       <AnswerField
@@ -49,6 +49,16 @@ const Answers = ({ answers, setAnswers }) => (
       )}
     >
       Add Answer
+    </Button>
+    <Button
+      id = "addAnswerButton"
+      bsStyle='info'
+      onClick={() => {
+        const newAnswers= R.remove(answers.length-1, 1, answers);
+        setAnswers(newAnswers);
+      }}
+    >
+      Remove Question
     </Button>
   </div>
 );
