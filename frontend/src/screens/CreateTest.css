@@ -9,3 +9,34 @@
 #loadingSecton {
   padding-left: 30px;
 }
+
+#createHeader {
+  font-family: "Trebuchet MS";
+  font-size: 22px;
+  font-weight: 900;
+  color: #0034d1;
+  padding: 0px 0px 15px 50px;
+}
+
+.createForm {
+  padding-left: 50px;
+}
+
+#generateButton {
+  background-color: #4c45f1;
+  border: 1px solid black;
+  border-radius: 4px;
+  color: white;
+  font-family: "Trebuchet MS";
+  font-weight: 500;
+  padding: 5px 15px 5px 15px;
+  margin-left: 5px;
+}
+
+#test {
+  width: 367px;
+}
+
+#name {
+  width: 367px;
+}

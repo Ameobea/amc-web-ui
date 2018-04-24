@@ -67,16 +67,12 @@ ul {
   padding: 0;
   width: 150px;
   background-color: #88a1d5;
-  height: 700px;
+  height: 100%;
   font-family: "Trebuchet MS";
   font-size: 22px;
   color: white;
   font-weight: 600;
 }
-
-/*li:hover {
-  background-color: #4c45f1;
-}*/
 
 .tab-content {
   display: flex;

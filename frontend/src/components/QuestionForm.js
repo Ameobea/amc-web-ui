@@ -20,7 +20,7 @@ const getEmptyQuestion = () => ({
   questionValid: false
 });
 
-const Answers = ({ answers, setAnswers }) => (
+const Answers = ({ answers, setAnswers, removeAnswer }) => (
   <div className="answers" style={{ marginBottom: 20 }}>
     {answers.map(({ answerText, correct }, index) => (
       <AnswerField
@@ -49,6 +49,16 @@ const Answers = ({ answers, setAnswers }) => (
       )}
     >
       Add Answer
+    </Button>
+    <Button
+      id = "addAnswerButton"
+      bsStyle='info'
+      onClick={() => {
+        const newAnswers= R.remove(answers.length-1, 1, answers);
+        setAnswers(newAnswers);
+      }}
+    >
+      Remove Answer
     </Button>
   </div>
 );
@@ -141,6 +151,17 @@ const FormControls = ({ state, setState }) => (
         style={{ marginTop: 0, marginRight: 10 }}
       >
         Add Question
+      </Button>
+      <Button
+        id="submitButton"
+        bsStyle="primary"
+        onClick={() => {
+          const newQuestions = R.remove(state.questions.length-1, 1, state.questions);
+          setState({...state, questions: newQuestions});
+        }}
+        style={{ marginTop: 0, marginRight: 10 }}
+      >
+        Remove Question
       </Button>
 
       <Button
