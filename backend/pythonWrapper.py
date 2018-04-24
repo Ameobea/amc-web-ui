@@ -61,8 +61,17 @@ def delete_project_directory(projectDir: str):
 
     rmtree(projectDir)
 
-if __name__ == "__main__":
-    project_name = 'pythonTest4'
-    project_dir = createProject(project_name)
-    addQuestion('simple.tex', project_dir, project_name)
-    prepareQuestion(project_dir, project_name, 'simple.tex', 'TheNameOfThePDF')
+def grade_uploaded_tests(projectDir: str):
+    # Analyze tests
+    run(['auto-multiple-choice', 'analyse', '--projet', projectDir,
+         path.join(projectDir, 'scans', '*')])
+
+    # Compute grades
+    run(['auto-multiple-choice', 'note', '--data', path.join(projectDir, 'data'),
+         '--seuil', '0.15'])
+
+    # TODO: Look into automatic association
+
+    # Export marks (?)
+    # run(['auto-multiple-choice', 'export', '--data', path.join(projectDir, 'data'),
+    #      '--module', 'ods', ''])

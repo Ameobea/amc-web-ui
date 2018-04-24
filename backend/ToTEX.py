@@ -1,6 +1,7 @@
 ''' Contains utilities for converting the intermediate JSON representation into
 TeX content. '''
 
+import datetime
 from typing import List
 
 header = '''
@@ -12,6 +13,9 @@ header = '''
 \\usepackage[box,completemulti]{automultiplechoice}
 
 \\begin{document}
+
+% Make our tests deterministically generated
+% \\AMCrandomseed{1237893}
 
 %%% Set groups to be shuffled
 \\setdefaultgroupmode{withoutreplacement}
@@ -27,7 +31,7 @@ header = '''
 
 \\begin{minipage}{.4\\linewidth}
 
-\\centering\\large\\bf Test\\\\ Examination on Jan., 1st, 2008\\end{minipage}
+\\centering\\large\\bf Test\\\\ Examination on TODAY\\end{minipage}
 \\namefield{\\fbox{
                 \\begin{minipage}{.5\\linewidth}
                   Firstname and lastname:

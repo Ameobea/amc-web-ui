@@ -8,7 +8,7 @@ from os import path
 
 from ToTEX import parse_question_dict, parse_question_dict_list
 import pythonWrapper
-from db import insert_questions, query_questions, store_test
+from db import insert_questions, query_questions, store_test, retrieve_tests
 
 app = Flask(__name__, static_url_path='')
 CORS(app)
@@ -63,6 +63,7 @@ def generate_pdf():
     store_test(j['name'], j['username'], j['questions'])
 
     project_dir = pythonWrapper.createProject(j['name'])
+    print(project_dir)
     tex_file_path = path.join(project_dir, 'text.tex')
 
     with open(tex_file_path, mode='w') as quiz_file:
@@ -108,7 +109,20 @@ def grade_test():
     project_dir = pythonWrapper.createProject('grading')
     print(project_dir)
     # Save the uploaded file to it
-    file.save(path.join(project_dir, 'to_grade.pdf'))
+    file.save(path.join(project_dir, 'scans', 'to_grade.pdf'))
+
+    # Regenerate test from saved JSON
+    # TODO: Add actual params for this
+    test_spec = retrieve_tests('Test Name', 'Your Username')[0]
+    tex_file_path = path.join(project_dir, 'text.tex')
+    # Re-build the TeX file from the saved test
+    with open(tex_file_path, mode='w') as quiz_file:
+        quiz_file.write(parse_question_dict_list(test_spec['questions']))
+        quiz_file.close()
+
+    # pythonWrapper.prepareQuestion(project_dir, tex_file_path, 'TheNameOfThePDF')
+
+    # TODO: Call the grading function from AMC
 
     return jsonify({'placeholder': 'value'})
 
