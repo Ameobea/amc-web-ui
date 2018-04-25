@@ -1,4 +1,5 @@
 import React from 'react';
+import './Grade.css';
 import Dropzone from 'react-dropzone';
 
 const handleDrop = files => {
@@ -14,9 +15,11 @@ const handleDrop = files => {
 
 const Grade = () => (
   <div>
-    <Dropzone onDrop={handleDrop}>
+    <Dropzone id = 'dropzone' onDrop={handleDrop}>
       <p>Drag scanned tests to be graded and drop them here.</p>
     </Dropzone>
+    <div id="bottomspace">
+    </div>
   </div>
 );
 
