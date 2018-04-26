@@ -1,10 +1,8 @@
-''' Contains utilities for converting the intermediate JSON representation into
-TeX content. '''
+''' Contains utilities for converting the intermediate JSON representation into TeX content. '''
 
-import datetime
 from typing import List
 
-header1 = '''
+HEADER_1 = '''
 \\documentclass[a4paper]{article}
 
 \\usepackage[utf8x]{inputenc}
@@ -22,7 +20,7 @@ header1 = '''
 % \\setdefaultgroupmode{withoutreplacement}
 '''
 
-header2 = '''
+HEADER_2 = '''
 \\onecopy{COPIES}{
 
 %%% beginning of the test sheet header:
@@ -47,7 +45,7 @@ Duration : 10 minutes.
 %%% end of the header
 '''
 
-answersheet = '''
+ANSWER_SHEET_SPEC = '''
 %%% beginning of the answer sheet header
 
 % Insert a double page break
@@ -75,7 +73,7 @@ answersheet = '''
 \\AMCform
 '''
 
-question_body = '''
+QUESTION_BODY_SPEC = '''
 \\element{{{}}}{{
   \\begin{{question}}{{{}-a}}
     {}
@@ -86,30 +84,65 @@ question_body = '''
 }}
 '''
 
-trailer = '''
+TRAILER = '''
 }
 
 \\end{document}
 '''
 
 def create_answer(text: str, is_correct: bool):
+    ''' Generates the LaTeX code for a single question given its content and whether it is correct
+    or not. '''
+
     return '      \\{}{{{}}}'.format('correctchoice' if is_correct else 'wrongchoice',
                                      text)
 
-def parse_question_dict(q: dict, index: int=1) -> str:
-    answers = '\n'.join(map(lambda a: create_answer(a['answerText'], a['correct']), q['answers']))
-    return question_body.format(q.get('topic') or 'default', index, q['questionText'], answers)
+def parse_question_dict(questions: dict, index: int = 1) -> str:
+    ''' Given a dictionary representing a question, returns the corresponding LaTeX code that
+    will be injected into the generated .tex file to represent it on the quiz.  The provided
+    dict should have the following structure:
 
-def parse_question_dict_list(l: List[dict], copies=10) -> str:
+    ```py
+    {
+        'questionText': 'Which is the closest plane to the sun in the solar system?',
+        'answers': [
+            {
+                'answerText': 'Saturn',
+                'isCorrect': False,
+            },
+            {
+                'answerText': 'Mercury',
+                'isCorrect': True,
+            }
+        ],
+        'topic': 'Astronomy', // Optional; defaults to "default"
+    }
+    ```
+    '''
+
+    answers = '\n'.join(map(
+        lambda a: create_answer(a['answerText'], a['correct']), questions['answers']))
+
+    return QUESTION_BODY_SPEC.format(
+        questions.get('topic') or 'default',
+        index,
+        questions['questionText'],
+        answers)
+
+def parse_question_dict_list(question_list: List[dict], copies: int = 10) -> str:
+    ''' Given a list of questions in the schema detailed in the `parse_question_dict` function,
+    parses them all into LaTeX, combines them with the header and trailer required to produce
+    a valid AMC .tex file, and returns the generated LaTeX source code as a string. '''
+
     output = ''
-    for (i, question) in enumerate(l):
+    for (i, question) in enumerate(question_list):
         output += parse_question_dict(question, i)
         output += '\n'
 
     groups = ''
-    topics = set(map(lambda q: q.get('topic') or 'default', l))
+    topics = set(map(lambda q: q.get('topic') or 'default', question_list))
     for topic in topics:
         groups += '\\insertgroup{{{}}}\n\n'.format(topic)
 
-    our_header2 = header2.replace('COPIES', str(copies))
-    return header1 + output + our_header2 + groups + answersheet + trailer
+    our_header2 = HEADER_2.replace('COPIES', str(copies))
+    return HEADER_1 + output + our_header2 + groups + ANSWER_SHEET_SPEC + TRAILER

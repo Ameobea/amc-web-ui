@@ -11,6 +11,12 @@ from typing import List
 
 
 def run(args: List[str], shell=False):
+    ''' Runs the provided command in the system.  The command should be split at spaces and
+    provided as a list of individual words.
+
+    If `shell` is set to `True`, the command will be executed using `sh -c {command}` and
+    escaped for the shell. '''
+
     print('Running: {}'.format(' '.join(args)))
     if shell:
         # Shell-escape the string to avoid shell injection vulnerabilities
@@ -22,16 +28,20 @@ def make_project_dir(temp_dir: str, paths: List[str]):
     os.mkdir(path.join(temp_dir, *paths))
 
 
-def create_dummy_student_list(projectDir: str):
-    students_list_path = path.join(projectDir, 'cr', 'student_names.csv')
-    with open(students_list_path, mode='w') as f:
+def create_dummy_student_list(project_dir: str):
+    ''' Creates a CSV file in the provided project directory containing a dummy list of student
+    names.  AMC's `note` command requires a CSV file like this, so we generate this one if
+    the user doesn't provide a student list of their own. '''
+
+    students_list_path = path.join(project_dir, 'cr', 'student_names.csv')
+    with open(students_list_path, mode='w') as student_list_file:
         for i in range(0, 300):
-            f.write('Student {}\n'.format(i))
+            student_list_file.write('Student {}\n'.format(i))
 
     return students_list_path
 
 
-def createProject(project_name: str):
+def create_project(project_name: str):
     """ Creates a new project in a temporary directory and returns the path to the
     created directory. """
 
@@ -59,50 +69,54 @@ def createProject(project_name: str):
     return path.join(temp_dir, project_name)
 
 
-def prepareQuestion(projectDir, tex_file_path, pdfName):
+def prepare_question(project_dir, tex_file_path):
+    ''' Given a project directory set up with the correct directory structure for AMC and a TeX
+    file containing the quiz to be generated, generates the quiz and extracts layout information
+    that can later be used for grading. '''
+
     # Run the AMC command line to create the subject, correction, and position files
-    run(['auto-multiple-choice', 'prepare', '--mode', 's', '--prefix', projectDir,
+    run(['auto-multiple-choice', 'prepare', '--mode', 's', '--prefix', project_dir,
          tex_file_path, '--out-sujet', 'DOC-subject.pdf', '--out-corrige', 'DOC-correction.pdf',
          '--out-calage', 'DOC-calage.xy'])
 
     # Extract the scoring data from the source file
     run(['auto-multiple-choice', 'prepare', '--mode', 'b',
-         '--prefix', projectDir, tex_file_path, '--data', './data/'])
+         '--prefix', project_dir, tex_file_path, '--data', './data/'])
 
     # Add data from each working document to the layout database
-    run(['auto-multiple-choice', 'meptex', '--src', path.join(projectDir, 'DOC-calage.xy'),
-         '--data', path.join(projectDir, 'data')])
+    run(['auto-multiple-choice', 'meptex', '--src', path.join(project_dir, 'DOC-calage.xy'),
+         '--data', path.join(project_dir, 'data')])
 
-def delete_project_directory(projectDir: str):
+def delete_project_directory(project_dir: str):
     ''' Deletes the temporary directory for the project '''
 
-    rmtree(projectDir)
+    rmtree(project_dir)
 
-def grade_uploaded_tests(projectDir: str) -> str:
-    ''' Given a project directory containing a test that has already been prepared, grades
-    all tests in the `scans` subdirectory.  The resulting zooms + crops are zipped up, and
-    the path to the created zipfile is returned. '''
+def grade_uploaded_tests(project_dir: str) -> str:
+    ''' Given a project directory containing a test that has already been prepared, grades all
+    tests in the `scans` subdirectory.  The resulting zooms + crops are zipped up, and the path to
+    the created zipfile is returned. '''
 
     # Analyze tests
-    run(['auto-multiple-choice', 'analyse', '--projet', projectDir,
-         path.join(projectDir, 'scans', '*')], shell=True)
+    run(['auto-multiple-choice', 'analyse', '--projet', project_dir,
+         path.join(project_dir, 'scans', '*')], shell=True)
 
     # Compute grades
-    run(['auto-multiple-choice', 'note', '--data', path.join(projectDir, 'data'),
+    run(['auto-multiple-choice', 'note', '--data', path.join(project_dir, 'data'),
          '--seuil', '0.15'], shell=True)
 
     # TODO: Take this as optional input from the user
-    students_list_path = create_dummy_student_list(projectDir)
+    students_list_path = create_dummy_student_list(project_dir)
 
     # Export grades to CSV
-    run(['auto-multiple-choice', 'export', '--data', path.join(projectDir, 'data'),
+    run(['auto-multiple-choice', 'export', '--data', path.join(project_dir, 'data'),
          '--module', 'CSV', '--fich-noms', students_list_path, '-o',
-         path.join(projectDir, 'cr', 'GRADES.csv')], shell=True)
+         path.join(project_dir, 'cr', 'GRADES.csv')], shell=True)
 
     # TODO: Look into automatic association
 
     # Zip up the directory containing crops and zooms and return it to the user.
-    zip_path = path.join(projectDir, 'images')
-    make_archive(zip_path, 'zip', path.join(projectDir, 'cr'))
+    zip_path = path.join(project_dir, 'images')
+    make_archive(zip_path, 'zip', path.join(project_dir, 'cr'))
 
-    return path.join(projectDir, 'images.zip')
+    return path.join(project_dir, 'images.zip')

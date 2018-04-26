@@ -10,7 +10,7 @@ MONGO_PASSWORD = os.environ.get('MONGO_PASSWORD') or ''
 MONGO_HOST = os.environ.get('MONGO_HOST') or 'localhost'
 MONGO_PORT = int(os.environ.get('MONGO_PORT')) if os.environ.get('MONGO_PORT') else 27017
 
-mongo_url = "mongodb://{}{}{}{}{}:{}/".format(
+MONGO_URL = "mongodb://{}{}{}{}{}:{}/".format(
     MONGO_USER,
     '' if MONGO_PASSWORD == '' else ':',
     MONGO_PASSWORD,
@@ -19,33 +19,35 @@ mongo_url = "mongodb://{}{}{}{}{}:{}/".format(
     MONGO_PORT
 )
 
-mongo_client = MongoClient(mongo_url)
-amc_database = mongo_client["amc"]
+MONGO_CLIENT = MongoClient(MONGO_URL)
+AMC_DB = MONGO_CLIENT["amc"]
 
 def insert_questions(questions: List[dict], **kwargs):
     """ Inserts a list of questions into the database with a given topic. """
 
     questions_with_topics = map(lambda question: {**question, **kwargs}, questions)
-    amc_database['questions'].insert_many(questions_with_topics)
+    AMC_DB['questions'].insert_many(questions_with_topics)
 
 def get_questions_by_topic(topic: str) -> List[dict]:
     """ Pulls all questions out of the dictinary with the supplied topic """
 
-    res = amc_database['questions'].find({"topic": {"$eq": topic}})
+    res = AMC_DB['questions'].find({"topic": {"$eq": topic}})
     return list(res)
 
-def remove_falsey_keys(d: dict) -> dict:
+def remove_falsey_keys(dictionary: dict) -> dict:
     """ Removes all keys from the dictionary that are `None`, False, or an empty string. """
 
-    truthy_keys = filter(lambda key: d.get(key) not in (None, False, '',), d.keys())
-    return {key: d[key] for key in truthy_keys}
+    is_truthy = lambda key: dictionary.get(key) not in (None, False, '',)
+    truthy_keys = filter(is_truthy, dictionary.keys())
+    return {key: dictionary[key] for key in truthy_keys}
 
 def pluck(plucked_key: str) -> Callable[[dict], dict]:
     """ Returns a function that returns dictionary without a given key. """
 
-    def pluck_inner(d: dict) -> dict:
+    def pluck_inner(dictionary: dict) -> dict:
         """ Returns a dictionary without a given key. """
-        return {key: d[key] for key in filter(lambda key: key != plucked_key, d.keys())}
+        return {key: dictionary[key] for key in filter(
+            lambda key: key != plucked_key, dictionary.keys())}
 
     return pluck_inner
 
@@ -65,7 +67,7 @@ def query_questions(topic: Optional[str], username: Optional[str],
         'questionText': {'$regex': '.*{}.*'.format(question_text)} if question_text else None,
     }
 
-    db_res = list(amc_database['questions'].find(remove_falsey_keys(query), limit=limit))
+    db_res = list(AMC_DB['questions'].find(remove_falsey_keys(query), limit=limit))
     return remove_oids(db_res)
 
 def store_test(test_name: str, username: str, question_list: List[dict]):
@@ -78,7 +80,7 @@ def store_test(test_name: str, username: str, question_list: List[dict]):
         'questions': question_list,
     }
 
-    amc_database['tests'].insert_one(doc)
+    AMC_DB['tests'].insert_one(doc)
 
 def retrieve_tests(test_name: str, username: str) -> List[dict]:
     ''' Retrieves all tests that match the provided criteria, loading them from the database and
@@ -89,5 +91,5 @@ def retrieve_tests(test_name: str, username: str) -> List[dict]:
         'username': username,
     }
 
-    db_res = list(amc_database['tests'].find(query))
+    db_res = list(AMC_DB['tests'].find(query))
     return remove_oids(db_res)
