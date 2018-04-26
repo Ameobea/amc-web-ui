@@ -67,7 +67,7 @@ def generate_pdf():
     tex_file_path = path.join(project_dir, 'text.tex')
 
     with open(tex_file_path, mode='w') as quiz_file:
-        quiz_file.write(parse_question_dict_list(j['questions']))
+        quiz_file.write(parse_question_dict_list(j['questions'], copies=j.get('copies')))
         quiz_file.close()
 
     pythonWrapper.prepareQuestion(project_dir, tex_file_path, 'TheNameOfThePDF')
