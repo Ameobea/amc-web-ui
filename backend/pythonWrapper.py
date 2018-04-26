@@ -1,17 +1,34 @@
 """ Wrapper functions that interact with the `auto-multiple-choice` CLI """
 
 from functools import partial
-from subprocess import run
+import subprocess
 import tempfile
 import os
 from os import path
-import json
-from shutil import rmtree
+import shlex
+from shutil import make_archive, rmtree
 from typing import List
+
+
+def run(args: List[str], shell=False):
+    print('Running: {}'.format(' '.join(args)))
+    if shell:
+        # Shell-escape the string to avoid shell injection vulnerabilities
+        args = '/bin/sh -c {}'.format(shlex.quote(' '.join(args)))
+    subprocess.run(args, shell=shell)
 
 
 def make_project_dir(temp_dir: str, paths: List[str]):
     os.mkdir(path.join(temp_dir, *paths))
+
+
+def create_dummy_student_list(projectDir: str):
+    students_list_path = path.join(projectDir, 'cr', 'student_names.csv')
+    with open(students_list_path, mode='w') as f:
+        for i in range(0, 300):
+            f.write('Student {}\n'.format(i))
+
+    return students_list_path
 
 
 def createProject(project_name: str):
@@ -61,17 +78,30 @@ def delete_project_directory(projectDir: str):
 
     rmtree(projectDir)
 
-def grade_uploaded_tests(projectDir: str):
+def grade_uploaded_tests(projectDir: str) -> str:
+    """ Given a project directory containing a test that has already been prepared, grades all tests in
+    the `scans` subdirectory.  The resulting zooms + crops are zipped up, and the path to the created
+    zipfile is returned. """
     # Analyze tests
     run(['auto-multiple-choice', 'analyse', '--projet', projectDir,
-         path.join(projectDir, 'scans', '*')])
+         path.join(projectDir, 'scans', '*')], shell=True)
 
     # Compute grades
     run(['auto-multiple-choice', 'note', '--data', path.join(projectDir, 'data'),
-         '--seuil', '0.15'])
+         '--seuil', '0.15'], shell=True)
+
+    # TODO: Take this as optional input from the user
+    students_list_path = create_dummy_student_list(projectDir)
+
+    # Export grades to CSV
+    run(['auto-multiple-choice', 'export', '--data', path.join(projectDir, 'data'),
+         '--module', 'CSV', '--fich-noms', students_list_path, '-o',
+         path.join(projectDir, 'cr', 'GRADES.csv')], shell=True)
 
     # TODO: Look into automatic association
 
-    # Export marks (?)
-    # run(['auto-multiple-choice', 'export', '--data', path.join(projectDir, 'data'),
-    #      '--module', 'ods', ''])
+    # Zip up the directory containing crops and zooms and return it to the user.
+    zip_path = path.join(projectDir, 'images')
+    make_archive(zip_path, 'zip', path.join(projectDir, 'cr'))
+
+    return path.join(projectDir, 'images.zip')

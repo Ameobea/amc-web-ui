@@ -97,7 +97,7 @@ def find_questions():
 
 @app.route("/grade_test", methods=["POST"])
 def grade_test():
-    j = request.json
+    j = request.form.to_dict()
     validate_json(j, ['testName', 'username'])
 
     if 'file' not in request.files or request.files['file'].filename == '':
@@ -105,8 +105,8 @@ def grade_test():
         raise InvalidUsage('You must provide a file for grading.')
 
     file = request.files['file']
-    if file.content_type != 'application/pdf':
-        raise InvalidUsage('You must provide a valid PDF file.')
+    if file.content_type != 'image/jpeg':
+        raise InvalidUsage('You must provide a valid JPG file; {} provided.'.format(file.content_type))
 
     # Save the file to a temporary directory
     project_dir = pythonWrapper.createProject('grading')
@@ -130,10 +130,13 @@ def grade_test():
     # Re-prepare questions and generate layout information
     pythonWrapper.prepareQuestion(project_dir, tex_file_path, 'TheNameOfThePDF')
 
-    # Grade the tests using the layout information
-    pythonWrapper.grade_uploaded_tests(project_dir)
+    # Grade the tests using the layout information and get the path to the created zipfile
+    # containing zooms + crops of the graded tests.
+    zipfile_path = pythonWrapper.grade_uploaded_tests(project_dir)
 
-    return jsonify({'placeholder': 'value'})
+    return send_file(zipfile_path, attachment_filename='zooms_and_crops.zip')
+
+    # TODO: Cleanup temp dir
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
