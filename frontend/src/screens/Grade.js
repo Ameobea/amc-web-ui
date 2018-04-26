@@ -14,7 +14,13 @@ const handleDrop = (state, files) => {
   Object.keys(state).forEach(key => payload.append(key, state[key]));
 
   fetch('./grade_test', { method: 'POST', body: payload })
-    .then(res => res.blob())
+    .then(res => {
+      if(res.status !== 200) {
+        return res.json().then(({ message }) => { throw message; });
+      }
+
+      return res.blob();
+    })
     .then(blob => download(blob, 'zooms_and_crops.zip', 'application/zip'));
 };
 

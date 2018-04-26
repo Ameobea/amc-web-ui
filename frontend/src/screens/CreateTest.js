@@ -8,6 +8,10 @@ import { Input } from '../components/InputField';
 import "./CreateTest.css";
 
 const handleSubmit = state => {
+  if(!state.questions) {
+    return alert('You must choose at least one question!');
+  }
+
   fetch(
     './create_project',
     {
@@ -18,8 +22,17 @@ const handleSubmit = state => {
       },
     }
   )
-    .then(res => res.blob())
-    .then(blob => download(blob, 'quiz.pdf', 'application/pdf'));
+    .then(res => {
+      if(res.status !== 200) {
+        return res.json().then(({ message }) => { throw message; });
+      }
+
+      return res.blob();
+    })
+    .then(blob => download(blob, 'quiz.pdf', 'application/pdf'))
+    .catch(err => {
+      alert(err);
+    });
 };
 
 const TestPreviewHeader = () => (

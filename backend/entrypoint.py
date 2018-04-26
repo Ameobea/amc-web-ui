@@ -123,7 +123,7 @@ def grade_test():
         raise InvalidUsage('You must provide a file for grading.')
 
     file = request.files['file']
-    if file.content_type != 'image/jpeg':
+    if file.content_type not in ('image/jpeg', 'image/png', 'image/tiff', 'application/pdf'):
         raise InvalidUsage(
             'You must provide a valid JPG file; {} provided.'.format(file.content_type))
 
