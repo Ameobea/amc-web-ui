@@ -1,4 +1,5 @@
 import React from 'react';
+import './Grade.css';
 import download from 'downloadjs';
 import Dropzone from 'react-dropzone';
 import { withState } from 'recompose';
@@ -24,7 +25,7 @@ const Grade = withState('state', 'setState', {})(
       <Input state={state} setState={setState} label='Username: ' stateKey='username' />
       <br />
 
-      <Dropzone onDrop={files => handleDrop(state, files)}>
+      <Dropzone id = 'dropzone' onDrop={files => handleDrop(state, files)}>
         <p>Drag scanned tests to be graded and drop them here.</p>
       </Dropzone>
     </div>

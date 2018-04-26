@@ -86,6 +86,8 @@ const TestPreview = withState('state', 'setState', getInitialTestPreviewState())
           Generate
         </button>
       </div>
+      <div id="bottomspace">
+      </div>
     </div>
   )
 );
