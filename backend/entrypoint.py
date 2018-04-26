@@ -80,7 +80,7 @@ def generate_pdf():
 @app.route("/store_questions", methods=["POST"])
 def store_questions():
     j = request.json
-    validate_json(j, 'topic', 'username', 'questions')
+    validate_json(j, ['topic', 'username', 'questions'])
 
     insert_questions(j['questions'], topic=j['topic'], username=j['username'])
 

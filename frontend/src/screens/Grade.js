@@ -1,4 +1,5 @@
 import React from 'react';
+import download from 'downloadjs';
 import Dropzone from 'react-dropzone';
 import { withState } from 'recompose';
 
@@ -12,8 +13,8 @@ const handleDrop = (state, files) => {
   Object.keys(state).forEach(key => payload.append(key, state[key]));
 
   fetch('./grade_test', { method: 'POST', body: payload })
-    .then(res => res.json())
-    .then(res => console.log(res));
+    .then(res => res.blob())
+    .then(blob => download(blob, 'zooms_and_crops.zip', 'application/zip'));
 };
 
 const Grade = withState('state', 'setState', {})(

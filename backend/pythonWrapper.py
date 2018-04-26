@@ -79,9 +79,10 @@ def delete_project_directory(projectDir: str):
     rmtree(projectDir)
 
 def grade_uploaded_tests(projectDir: str) -> str:
-    """ Given a project directory containing a test that has already been prepared, grades all tests in
-    the `scans` subdirectory.  The resulting zooms + crops are zipped up, and the path to the created
-    zipfile is returned. """
+    ''' Given a project directory containing a test that has already been prepared, grades
+    all tests in the `scans` subdirectory.  The resulting zooms + crops are zipped up, and
+    the path to the created zipfile is returned. '''
+
     # Analyze tests
     run(['auto-multiple-choice', 'analyse', '--projet', projectDir,
          path.join(projectDir, 'scans', '*')], shell=True)
