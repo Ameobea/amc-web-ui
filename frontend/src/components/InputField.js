@@ -12,4 +12,16 @@ const InputField = ({ label, children }) => (
   </div>
 );
 
+export const Input = ({ state, setState, label, stateKey, ...props }) => (
+  <InputField label={label}>
+    <input
+      className='infoInput'
+      type='text'
+      value={state[stateKey]}
+      onChange={e => setState({ ...state, [stateKey]: e.target.value })}
+      {...props}
+    />
+  </InputField>
+);
+
 export default InputField;

@@ -4,7 +4,7 @@ import { withState } from 'recompose';
 import { Table } from 'react-bootstrap';
 
 import LoadQuestions from '../components/LoadQuestions';
-import InputField from '../components/InputField';
+import { Input } from '../components/InputField';
 import "./CreateTest.css";
 
 const handleSubmit = state => {
@@ -49,6 +49,7 @@ const Answers = ({ answers = [] }) => (
 const getInitialTestPreviewState = () => ({
   name: 'Test Name',
   username: 'Your Username',
+  copies: 10,
 });
 
 const TestPreview = withState('state', 'setState', getInitialTestPreviewState())(
@@ -72,25 +73,10 @@ const TestPreview = withState('state', 'setState', getInitialTestPreviewState())
         </tbody>
       </Table>
 
-      <div class='createForm'>
-        <InputField label='Test Name: '>
-          <input
-            class='infoInput'
-            id='test'
-            type='text'
-            value={state.name}
-            onChange={e => setState({ ...state, name: e.target.value })}
-          />
-        </InputField>
-        <InputField label='Username: '>
-          <input
-            class='infoInput'
-            id='name'
-            type='text'
-            value={state.username}
-            onChange={e => setState({ ...state, username: e.target.value })}
-          />
-        </InputField>
+      <div className='createForm'>
+        <Input state={state} setState={setState} label='Test Name: ' stateKey='name' />
+        <Input state={state} setState={setState} label='Username: ' stateKey='username' />
+        <Input state={state} setState={setState} label='Copies: ' stateKey='copies' />
 
         <button
           id='generateButton'
