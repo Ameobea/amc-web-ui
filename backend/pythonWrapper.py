@@ -53,8 +53,8 @@ def prepareQuestion(projectDir, tex_file_path, pdfName):
          '--prefix', projectDir, tex_file_path, '--data', './data/'])
 
     # Add data from each working document to the layout database
-    run(['auto-multiple-choice', 'meptex', '--src', path.join(projectDir, '$1', 'DOC-calage.xy'),
-         '--data', path.join(projectDir, '$1', 'data')])
+    run(['auto-multiple-choice', 'meptex', '--src', path.join(projectDir, 'DOC-calage.xy'),
+         '--data', path.join(projectDir, 'data')])
 
 def delete_project_directory(projectDir: str):
     ''' Deletes the temporary directory for the project '''

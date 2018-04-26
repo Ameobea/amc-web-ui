@@ -1,10 +1,12 @@
 """ Defines an API that can be used to interact with Auto Multiple Choice.  Exposes this
 API via a HTTP interface using the Flask webserver. """
 
-from flask import Flask, jsonify, request, send_file, url_for, render_template
-from flask_cors import CORS
 import json
 from os import path
+from typing import List
+
+from flask import Flask, jsonify, request, send_file
+from flask_cors import CORS
 
 from ToTEX import parse_question_dict, parse_question_dict_list
 import pythonWrapper
@@ -47,17 +49,15 @@ def generate_tex():
 
     return parse_question_dict(j)
 
-def validate_json(j: dict, key: str):
-    if (not j.get(key)) or (not j.get('username')):
-        raise InvalidUsage("You must supply both a topic and a username!")
-
-    if (not j.get('questions')) or not len(j['questions']):
-        raise InvalidUsage("You must supply questions to store!")
+def validate_json(j: dict, keys: List[str]):
+    for key in keys:
+        if not j.get(key):
+            raise InvalidUsage('You must supply a {} param.'.format(key))
 
 @app.route("/create_project", methods=["POST"])
 def generate_pdf():
     j = request.json
-    validate_json(j, 'name')
+    validate_json(j, ['name', 'username', 'questions'])
 
     # Save the test definition to the database for later usage
     store_test(j['name'], j['username'], j['questions'])
@@ -80,7 +80,7 @@ def generate_pdf():
 @app.route("/store_questions", methods=["POST"])
 def store_questions():
     j = request.json
-    validate_json(j, 'topic')
+    validate_json(j, 'topic', 'username', 'questions')
 
     insert_questions(j['questions'], topic=j['topic'], username=j['username'])
 
@@ -97,6 +97,9 @@ def find_questions():
 
 @app.route("/grade_test", methods=["POST"])
 def grade_test():
+    j = request.json
+    validate_json(j, ['testName', 'username'])
+
     if 'file' not in request.files or request.files['file'].filename == '':
         print(request.files)
         raise InvalidUsage('You must provide a file for grading.')
@@ -112,17 +115,23 @@ def grade_test():
     file.save(path.join(project_dir, 'scans', 'to_grade.pdf'))
 
     # Regenerate test from saved JSON
-    # TODO: Add actual params for this
-    test_spec = retrieve_tests('Test Name', 'Your Username')[0]
+    test_specs = retrieve_tests(j['testName'], j['username'])
+    if not test_specs:
+        raise InvalidUsage('No tests with the provided `testName` and `username` exist.',
+                           status_code=404)
+    test_spec = test_specs[0]
+
     tex_file_path = path.join(project_dir, 'text.tex')
-    # Re-build the TeX file from the saved test
+    # Re-build the TeX file for the saved test
     with open(tex_file_path, mode='w') as quiz_file:
         quiz_file.write(parse_question_dict_list(test_spec['questions']))
         quiz_file.close()
 
-    # pythonWrapper.prepareQuestion(project_dir, tex_file_path, 'TheNameOfThePDF')
+    # Re-prepare questions and generate layout information
+    pythonWrapper.prepareQuestion(project_dir, tex_file_path, 'TheNameOfThePDF')
 
-    # TODO: Call the grading function from AMC
+    # Grade the tests using the layout information
+    pythonWrapper.grade_uploaded_tests(project_dir)
 
     return jsonify({'placeholder': 'value'})
 
